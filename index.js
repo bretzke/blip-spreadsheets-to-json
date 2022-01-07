@@ -1,4 +1,4 @@
-let filename = "BOTs Infos (99Food-C).xlsx";
+let filename = "filename.xlsx";
 
 const SpreadsheetReader = require('./SpreadsheetReader');
 new SpreadsheetReader(filename);
