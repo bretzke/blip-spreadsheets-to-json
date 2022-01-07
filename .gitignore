@@ -1,0 +1,5 @@
+*
+!.gitignore
+!index.js
+!package.json
+!SpreadsheetReader.js
