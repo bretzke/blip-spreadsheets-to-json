@@ -16,15 +16,14 @@ module.exports = class SpreadsheetReader {
         // use lowercase letter
         this.configs = {
             "path": "JSONS",
-            "filenameTemplate": "deploy_99Food_Comercial",
-            "column_bot_name": "bots",
-            "column_key_name": "key",
-            "columns": {
-                "keys": "key",
-                "bots": "bot",
-            },
+            "filenameTemplate": "deploy_99Food",
+            "columnBotName": "bots",
+            "columnBotKey": "key",
             "pages": [
                 "dev", "hmg", "prd"
+            ],
+            "ignoreBots": [
+                "router", "principal"
             ]
         };
     }
@@ -46,10 +45,10 @@ module.exports = class SpreadsheetReader {
                     data = data.v;
                     if(Object.keys(columnsLetter).length < 2) {
                         data = data.toLowerCase();
-                        if(this.configs.column_bot_name == data) {
+                        if(this.configs.columnBotName == data) {
                             columnsLetter['bot'] = key.replace(/[^a-zA-Z]/, '');
                             botKeys['bot'] = new Array();
-                        } else if(this.configs.column_key_name == data) {
+                        } else if(this.configs.columnBotKey == data) {
                             columnsLetter['key'] = key.replace(/[^a-zA-Z]/, '');
                             botKeys['key'] = new Array();
                         }
@@ -78,7 +77,7 @@ module.exports = class SpreadsheetReader {
             botsUnion[botKey] = {};
 
             for(let index in this.bots[botKey]) {
-                if(this.bots[botKey][index].name.toLowerCase() == 'router') continue;
+                if(this.configs.ignoreBots.indexOf(this.bots[botKey][index].name.toLowerCase()) > -1) continue;
                 
                 for (let i = 0; i < keys.length; i++) {
                     const element = keys[i];
@@ -144,9 +143,16 @@ module.exports = class SpreadsheetReader {
         let body = "[";
 
         while(json.index.length) {
-            body = body + `\n    // ${json.index[0].toLowerCase().replace('-', ' ')}`;
-            body = body + `\n\t${JSON.stringify(json.content[0], null, "    ")}`;
-            body = body + `${(json.index.length > 1) ? ',' : ''}`;
+            body += `\n    // ${json.index[0].toLowerCase().replace('-', ' ')}`;
+            
+            body += "\n    {"
+
+            for(let key in json.content[0]) {
+                body += `\n        "${key}": "${json.content[0][key]}"`;
+                if(key != Object.keys(json.content[0])[Object.keys(json.content[0]).length - 1]) body += ","
+            }
+
+            body += `\n    }${(json.index.length > 1) ? ',' : ''}`;
 
             json.index.shift();
             json.content.shift();
