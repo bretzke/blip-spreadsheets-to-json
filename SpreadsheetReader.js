@@ -173,7 +173,7 @@ module.exports = class SpreadsheetReader {
 
     createDir(dir) {
         let fs = require('fs');
-        let dirs = dir.split('\\');
+        let dirs = dir.replace('/', '\\').split('\\');
         dir = '';
 
         while(dirs.length) {
