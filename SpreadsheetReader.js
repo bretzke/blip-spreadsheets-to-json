@@ -23,7 +23,7 @@ module.exports = class SpreadsheetReader {
                 "dev", "hmg", "prd"
             ],
             "ignoreBots": [
-                "router", "principal"
+                "router"
             ]
         };
     }
