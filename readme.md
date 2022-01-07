@@ -1,7 +1,7 @@
 # Spreadsheets To JSON
 
 Projeto consiste na leitura de planilhas com informações dos bots e captura do nome e chave de cada um, passando essas informações para JSON através das configurações setadas no arquivo SpreadsheetReader.js -> método setConfigs().
-Obs: Será abordado no título **Configurações** a descrição de cada configuração desse método.
+OBS: Será abordado no título **Configurações** a descrição de cada configuração desse método.
 
 ## 🚀 Começando
 
@@ -29,6 +29,8 @@ Após a instalação é necessário fazer algumas **configurações.**
 | columnBotKey | Nome da coluna que está salvo a chave de cada bot |
 | pages | Array que recebe o valor de cada página que será procurada |
 | pages | Array que recebe o nome de cada bot que não será escrito nos arquivos JSONs|
+
+**OBS: Usar sempre letra minúscula nos valores da variável de configuração.**
 
 Após a realização dessas configurações, basta executar o programa dando o comando:
 ```
