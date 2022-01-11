@@ -1,0 +1,22 @@
+{
+    "env": {
+        "es2021": true,
+        "node": true
+    },
+    "plugins": ["prettier"],
+    "extends": [
+        "airbnb-base",
+        "eslint:recommended",
+        "prettier"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 13,
+        "sourceType": "module"
+    },
+    "rules": {
+        "linebreak-style": 0,
+        "indent": ["error", 4],
+        "no-new": 0,
+        "no-continue": 0
+    }
+}

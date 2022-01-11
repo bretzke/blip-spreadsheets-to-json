@@ -23,7 +23,7 @@ Após a instalação é necessário fazer algumas **configurações.**
 
 | Chave        | Função           |
 | ---          | ---              |
-| path | caminho a partir do diretório atual que será salvo os arquivos (criação de pastas) |
+| output | caminho a partir do diretório atual que será despejado os arquivos (criação de pastas) |
 | filenameTemplate | Padrão de nome que será salvo os arquivos JSONs  |
 | columnBotName | Nome da coluna que está salvo o nome de cada bot |
 | columnBotKey | Nome da coluna que está salvo a chave de cada bot |

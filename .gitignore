@@ -1,6 +1,18 @@
 *
+
+# /
 !.gitignore
-!index.js
 !package.json
-!SpreadsheetReader.js
 !readme.md
+!.*
+!.husky/*
+
+# src
+!src
+!src/output
+!src/services
+!src/services/BotsToJson.js
+!src/services/FileManager.js
+!src/services/SpreadsheetReader.js
+!src/index.js
+!src/config.json

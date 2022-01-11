@@ -1,0 +1,12 @@
+{
+    "output": "output",
+    "filenameTemplate": "deploy_99Food",
+    "columnBotName": "bots",
+    "columnBotKey": "key",
+    "pages": [
+        "hmg", "prd"
+    ],
+    "ignoreBots": [
+        "router"
+    ]
+}
