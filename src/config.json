@@ -1,10 +1,10 @@
 {
-    "output": "output",
+    "output": "./../output/c",
     "filenameTemplate": "deploy_99Food",
     "columnBotName": "bots",
     "columnBotKey": "key",
     "pages": [
-        "hmg", "prd"
+        "dev", "hmg", "prd"
     ],
     "ignoreBots": [
         "router"

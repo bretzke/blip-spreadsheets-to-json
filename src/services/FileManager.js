@@ -4,7 +4,7 @@ module.exports = class FileManager {
     static createFile(data) {
         let { dir } = data;
 
-        if (!fs.existsSync(data.dir)) {
+        if (!FileManager.fileExists(data.dir)) {
             dir = FileManager.createDir(data.dir);
         }
 
@@ -45,5 +45,43 @@ module.exports = class FileManager {
         }
 
         return newDir;
+    }
+
+    static getFile(filename) {
+        try {
+            const data = fs.readFileSync(filename, 'utf8');
+            return data;
+        } catch (err) {
+            return false;
+        }
+    }
+
+    static getFilePath(filename) {
+        let exists = false;
+        let path;
+        let tried = 0;
+
+        while (!path && tried < 3) {
+            switch (tried) {
+                case 0:
+                    path = filename;
+                    break;
+                case 1:
+                    path = `${__dirname}\\..\\${filename}`;
+                    break;
+                default:
+                    path = `${__dirname}\\${filename}`;
+                    break;
+            }
+
+            exists = FileManager.fileExists(path);
+            tried += 1;
+        }
+
+        return exists === true ? path : false;
+    }
+
+    static fileExists(filePath) {
+        return fs.existsSync(filePath);
     }
 };

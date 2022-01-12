@@ -4,23 +4,25 @@ const FileManager = require('./FileManager');
 module.exports = class BotsToJson {
     constructor(filename) {
         this.setConfigs();
-        this.bots = SpreadsheetReader.readSpreadsheet(
-            `${__dirname}\\${filename}`
-        );
+        const filePath = FileManager.getFilePath(filename);
+        this.bots = SpreadsheetReader.readSpreadsheet(filePath, this.configs);
+        this.fixBotName();
         this.bots = this.createBotsUnion();
         this.generateJsonFile();
     }
 
+    fixBotName() {
+        Object.entries(this.bots).forEach(([key, bots]) => {
+            Object.entries(bots).forEach(([index, bot]) => {
+                if (typeof bot === 'object' && typeof bot.name === 'string') {
+                    this.bots[key][index].name = bot.name.toLowerCase().replace('-', ' ');
+                }
+            });
+        });
+    }
+
     setConfigs() {
-        // use lowercase letter
-        this.configs = {
-            output: '../output',
-            filenameTemplate: 'deploy_99Food',
-            columnBotName: 'bots',
-            columnBotKey: 'key',
-            pages: ['dev', 'hmg', 'prd'],
-            ignoreBots: ['router']
-        };
+        this.configs = JSON.parse(FileManager.getFile(`${__dirname}\\..\\config.json`));
     }
 
     createBotsUnion() {
@@ -30,47 +32,32 @@ module.exports = class BotsToJson {
         keys.forEach((botKey) => {
             botsUnion[botKey] = {};
 
-            Object.entries(this.bots[botKey]).forEach(
-                // eslint-disable-next-line
-                ([index, botPrincipal]) => {
-                    if (
-                        this.configs.ignoreBots.indexOf(
-                            botPrincipal.name.toLowerCase()
-                        ) > -1
-                    )
-                        return;
+            // eslint-disable-next-line
+            Object.entries(this.bots[botKey]).forEach(([index, botPrincipal]) => {
+                if (this.configs.ignoreBots.indexOf(botPrincipal.name.toLowerCase()) > -1) return;
 
-                    for (let i = 0; i < keys.length; i += 1) {
-                        if (botKey === keys[i]) continue;
+                for (let i = 0; i < keys.length; i += 1) {
+                    if (botKey === keys[i]) continue;
 
-                        const otherBotKey = this.findBotByName(
-                            keys[i],
-                            botPrincipal.name
-                        );
+                    const otherBotKey = this.findBotByName(keys[i], botPrincipal.name);
 
-                        if (otherBotKey) {
-                            if (
-                                typeof botsUnion[botKey][keys[i]] ===
-                                'undefined'
-                            ) {
-                                botsUnion[botKey][keys[i]] = {
-                                    index: [],
-                                    content: []
-                                };
-                            }
-
-                            botsUnion[botKey][keys[i]].index.push(
-                                botPrincipal.name
-                            );
-
-                            botsUnion[botKey][keys[i]].content.push({
-                                source_bot_key: botPrincipal.key,
-                                destination_bot_key: otherBotKey
-                            });
+                    if (otherBotKey) {
+                        if (typeof botsUnion[botKey][keys[i]] === 'undefined') {
+                            botsUnion[botKey][keys[i]] = {
+                                index: [],
+                                content: []
+                            };
                         }
+
+                        botsUnion[botKey][keys[i]].index.push(botPrincipal.name);
+
+                        botsUnion[botKey][keys[i]].content.push({
+                            source_bot_key: botPrincipal.key,
+                            destination_bot_key: otherBotKey
+                        });
                     }
                 }
-            );
+            });
         });
 
         return botsUnion;
@@ -78,10 +65,7 @@ module.exports = class BotsToJson {
 
     findBotByName(name, findName) {
         const botFound = this.bots[name].find((bot) => {
-            if (
-                typeof bot === 'object' &&
-                Object.prototype.hasOwnProperty.call(bot, 'name')
-            ) {
+            if (typeof bot === 'object' && Object.prototype.hasOwnProperty.call(bot, 'name')) {
                 return bot.name === findName;
             }
 
@@ -113,14 +97,12 @@ module.exports = class BotsToJson {
 
     generateDirAndFileName(json) {
         return {
-            dir: `${__dirname}\\${
-                this.configs.output ? `${this.configs.output}\\` : ''
-            }${json.key} to ${json.index}`,
-            filename: `${
-                this.configs.filenameTemplate
-                    ? `${this.configs.filenameTemplate}_`
-                    : ''
-            }${json.key}_to_${json.index}.json`
+            dir: `${__dirname}\\${this.configs.output ? `${this.configs.output}\\` : ''}${
+                json.key
+            } to ${json.index}`,
+            filename: `${this.configs.filenameTemplate ? `${this.configs.filenameTemplate}_` : ''}${
+                json.key
+            }_to_${json.index}.json`
         };
     }
 
@@ -128,19 +110,14 @@ module.exports = class BotsToJson {
         let body = '[';
 
         while (json.index.length) {
-            body += `\n    // ${json.index[0].toLowerCase().replace('-', ' ')}`;
+            body += `\n    // ${json.index[0]}`;
 
             body += '\n    {';
 
             // eslint-disable-next-line no-loop-func
             Object.entries(json.content[0]).forEach(([key, content]) => {
                 body += `\n        "${key}": "${content || ''}"`;
-                if (
-                    key !==
-                    Object.keys(json.content[0])[
-                        Object.keys(json.content[0]).length - 1
-                    ]
-                )
+                if (key !== Object.keys(json.content[0])[Object.keys(json.content[0]).length - 1])
                     body += ',';
             });
 
