@@ -4,8 +4,15 @@ const FileManager = require('./FileManager');
 module.exports = class BotsToJson {
     constructor(filename) {
         this.setConfigs();
+        this.init(filename);
+    }
+
+    init(filename) {
         const filePath = FileManager.getFilePath(filename);
-        this.bots = SpreadsheetReader.readSpreadsheet(filePath, this.configs);
+        this.bots = SpreadsheetReader.readSpreadsheet(filePath, {
+            pages: this.configs.pages,
+            columns: this.configs.columns
+        });
         this.fixBotName();
         this.bots = this.createBotsUnion();
         this.generateJsonFile();

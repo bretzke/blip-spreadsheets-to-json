@@ -4,38 +4,40 @@ module.exports = class SpreadsheetReader {
     static readSpreadsheet(filename, configs = {}) {
         const bots = {};
         const workbook = XLSX.readFile(filename);
+        const defaultJSON = {};
+
+        configs.columns.forEach((column) => {
+            defaultJSON[column.newIndexValue] = false;
+        });
 
         Object.entries(workbook.Sheets).forEach(([index, page]) => {
             if (configs.pages.indexOf(index.toLowerCase()) > -1) {
-                const botKeys = {};
-                const columnsLetter = {};
+                const columns = [];
                 const rows = [];
 
                 Object.entries(page).forEach(([key, value]) => {
                     if (typeof value.v === 'undefined') return;
 
                     let data = value.v;
-                    if (Object.keys(columnsLetter).length < 2) {
+                    if (columns.length < 2) {
                         data = data.toLowerCase();
-                        if (configs.columnBotName === data) {
-                            columnsLetter.bot = key.replace(/[^a-zA-Z]/, '');
-                            botKeys.bot = [];
-                        } else if (configs.columnBotKey === data) {
-                            columnsLetter.key = key.replace(/[^a-zA-Z]/, '');
-                            botKeys.key = [];
+                        const found = configs.columns.find((column) => column.searchIndex === data);
+
+                        if (typeof found === 'object') {
+                            columns.push({
+                                index: found.searchIndex,
+                                letter: key.replace(/[^a-zA-Z]/, ''),
+                                newIndexValue: found.newIndexValue
+                            });
                         }
                     } else {
-                        let i = key.indexOf(columnsLetter.bot) > -1 ? 'name' : false;
-                        i = !i && key.indexOf(columnsLetter.key) > -1 ? 'key' : i;
+                        const found = columns.find((column) => key.indexOf(column.letter) > -1);
 
-                        if (i) {
+                        if (typeof found === 'object') {
                             if (typeof rows[key.replace(/[^0-9]/, '')] === 'undefined')
-                                rows[key.replace(/[^0-9]/, '')] = {
-                                    name: false,
-                                    key: false
-                                };
+                                rows[key.replace(/[^0-9]/, '')] = defaultJSON;
 
-                            rows[key.replace(/[^0-9]/, '')][i] = data;
+                            rows[key.replace(/[^0-9]/, '')][found.newIndexValue] = data;
                         }
                     }
                 });
