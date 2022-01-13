@@ -4,11 +4,6 @@ module.exports = class SpreadsheetReader {
     static readSpreadsheet(filename, configs = {}) {
         const bots = {};
         const workbook = XLSX.readFile(filename);
-        const defaultJSON = {};
-
-        configs.columns.forEach((column) => {
-            defaultJSON[column.newIndexValue] = false;
-        });
 
         Object.entries(workbook.Sheets).forEach(([index, page]) => {
             if (configs.pages.indexOf(index.toLowerCase()) > -1) {
@@ -19,7 +14,7 @@ module.exports = class SpreadsheetReader {
                     if (typeof value.v === 'undefined') return;
 
                     let data = value.v;
-                    if (columns.length < 2) {
+                    if (columns.length < configs.columns.length) {
                         data = data.toLowerCase();
                         const found = configs.columns.find((column) => column.searchIndex === data);
 
@@ -35,7 +30,7 @@ module.exports = class SpreadsheetReader {
 
                         if (typeof found === 'object') {
                             if (typeof rows[key.replace(/[^0-9]/, '')] === 'undefined')
-                                rows[key.replace(/[^0-9]/, '')] = defaultJSON;
+                                rows[key.replace(/[^0-9]/, '')] = this.getDefaultJSON(configs);
 
                             rows[key.replace(/[^0-9]/, '')][found.newIndexValue] = data;
                         }
@@ -46,5 +41,15 @@ module.exports = class SpreadsheetReader {
             }
         });
         return bots;
+    }
+
+    static getDefaultJSON(configs) {
+        const json = {};
+
+        configs.columns.forEach((column) => {
+            json[column.newIndexValue] = false;
+        });
+
+        return json;
     }
 };
