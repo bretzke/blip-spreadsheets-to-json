@@ -1,4 +1,5 @@
 const XLSX = require('xlsx');
+const REG = require('../utils/Regex');
 
 module.exports = class SpreadsheetReader {
     static readSpreadsheet(filename, configs = {}) {
@@ -21,7 +22,7 @@ module.exports = class SpreadsheetReader {
                         if (typeof found === 'object') {
                             columns.push({
                                 index: found.searchIndex,
-                                letter: key.replace(/[^a-zA-Z]/, ''),
+                                letter: key.replace(REG.onlyLetters, ''),
                                 newIndexValue: found.newIndexValue
                             });
                         }
@@ -29,10 +30,11 @@ module.exports = class SpreadsheetReader {
                         const found = columns.find((column) => key.indexOf(column.letter) > -1);
 
                         if (typeof found === 'object') {
-                            if (typeof rows[key.replace(/[^0-9]/, '')] === 'undefined')
-                                rows[key.replace(/[^0-9]/, '')] = this.getDefaultJSON(configs);
+                            if (typeof rows[key.replace(REG.onlyNumbers, '')] === 'undefined')
+                                rows[key.replace(REG.onlyNumbers, '')] =
+                                    this.getDefaultJSON(configs);
 
-                            rows[key.replace(/[^0-9]/, '')][found.newIndexValue] = data;
+                            rows[key.replace(REG.onlyNumbers, '')][found.newIndexValue] = data;
                         }
                     }
                 });
