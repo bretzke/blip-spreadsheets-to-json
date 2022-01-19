@@ -1,0 +1,20 @@
+{
+    "output": "./../output",
+    "filenameTemplate": "deploy_99Food",
+    "pages": [
+        "dev", "hmg", "prd"
+    ],
+    "columns": [
+        {
+            "searchIndex": "bots",
+            "newIndexValue": "name"
+        },
+        {
+            "searchIndex": "key",
+            "newIndexValue": "key"
+        }
+    ],
+    "ignoreBots": [
+        "router"
+    ]
+}

@@ -13,26 +13,27 @@ Após a instalação é necessário fazer algumas **configurações.**
 
 ## ⚙ Configurações
 
-- Arquivo index.js:
+- Arquivo src/index.js:
 
 | Variável     | Função           |
 | ---          | ---              |
 | filename | Informar o nome do arquivo que será processado |
 
-- Arquivo SpreadsheetReader.js -> Método setConfigs() -> atributo this.configs:
+- Arquivo src/config.json:
 
 | Chave        | Função           |
 | ---          | ---              |
-| path | caminho a partir do diretório atual que será salvo os arquivos (criação de pastas) |
+| output | caminho a partir do diretório atual que será despejado os arquivos (criação de pastas) |
 | filenameTemplate | Padrão de nome que será salvo os arquivos JSONs  |
-| columnBotName | Nome da coluna que está salvo o nome de cada bot |
-| columnBotKey | Nome da coluna que está salvo a chave de cada bot |
 | pages | Array que recebe o valor de cada página que será procurada |
-| pages | Array que recebe o nome de cada bot que não será escrito nos arquivos JSONs|
+| columns | Array que recebe objetos para pesquisa das colunas |
+| columns:searchIndex | Valor da coluna que será procurado |
+| columns:newIndexValue | Novo valor do índice que será substituído pelo valor da coluna |
+| ignoreBots | Array que recebe o nome de cada bot que não será escrito nos arquivos JSONs|
 
 **OBS: Usar sempre letra minúscula nos valores da variável de configuração.**
 
-Após a realização dessas configurações, basta executar o programa dando o comando:
+Após a realização dessas configurações, basta executar o programa dentro da pasta **src**, dando o comando:
 ```
 npm index
 ```
