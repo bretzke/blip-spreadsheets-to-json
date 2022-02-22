@@ -17,3 +17,5 @@
 !src/services/BotsToJson.js
 !src/services/FileManager.js
 !src/services/SpreadsheetReader.js
+!src/utils
+!src/utils/Regex.js
