@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 
 module.exports = class FileManager {
     static createFile(data) {
@@ -58,27 +59,26 @@ module.exports = class FileManager {
 
     static getFilePath(filename) {
         let exists = false;
-        let path;
-        let tried = 0;
+        let filePath;
 
-        while (!path && tried < 3) {
-            switch (tried) {
+        for (let i = 0; i < 3; i += 1) {
+            switch (i) {
                 case 0:
-                    path = filename;
+                    filePath = path.resolve(filename);
                     break;
                 case 1:
-                    path = `${__dirname}\\..\\${filename}`;
+                    filePath = path.resolve(`../${filename}`);
                     break;
                 default:
-                    path = `${__dirname}\\${filename}`;
+                    filePath = path.resolve(`./${filename}`);
                     break;
             }
 
-            exists = FileManager.fileExists(path);
-            tried += 1;
+            exists = FileManager.fileExists(filePath);
+            if (exists) break;
         }
 
-        return exists === true ? path : false;
+        return exists === true ? filePath.replace(/\\/g, '/') : false;
     }
 
     static fileExists(filePath) {
