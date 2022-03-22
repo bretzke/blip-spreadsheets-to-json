@@ -1,3 +1,4 @@
+const path = require('path');
 const SpreadsheetReader = require('./SpreadsheetReader');
 const FileManager = require('./FileManager');
 
@@ -29,7 +30,7 @@ module.exports = class BotsToJson {
     }
 
     setConfigs() {
-        this.configs = JSON.parse(FileManager.getFile(`${__dirname}\\..\\config.json`));
+        this.configs = JSON.parse(FileManager.getFile('config.json'));
     }
 
     createBotsUnion() {
@@ -103,10 +104,14 @@ module.exports = class BotsToJson {
     }
 
     generateDirAndFileName(json) {
+        const dir = path.resolve(
+            `src/${this.configs.output ? `${this.configs.output}/` : ''}${json.key} to ${
+                json.index
+            }`.replace(/\\/g, '/')
+        );
+
         return {
-            dir: `${__dirname}\\${this.configs.output ? `${this.configs.output}\\` : ''}${
-                json.key
-            } to ${json.index}`,
+            dir,
             filename: `${this.configs.filenameTemplate ? `${this.configs.filenameTemplate}_` : ''}${
                 json.key
             }_to_${json.index}.json`
