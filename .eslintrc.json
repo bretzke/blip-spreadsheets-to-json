@@ -4,11 +4,7 @@
         "node": true
     },
     "plugins": ["prettier"],
-    "extends": [
-        "airbnb-base",
-        "eslint:recommended",
-        "prettier"
-    ],
+    "extends": ["airbnb-base", "eslint:recommended", "prettier"],
     "parserOptions": {
         "ecmaVersion": 13,
         "sourceType": "module"
@@ -17,6 +13,7 @@
         "linebreak-style": 0,
         "indent": ["error", 4, { "SwitchCase": 1 }],
         "no-new": 0,
-        "no-continue": 0
+        "no-continue": 0,
+        "no-console": 0
     }
 }

@@ -27,7 +27,7 @@ module.exports = class FileManager {
     }
 
     static createDir(dir) {
-        const dirs = dir.replaceAll('/', '\\').split('\\');
+        const dirs = dir.replace(/\\/g, '/').split('/');
         let newDir = '';
 
         while (dirs.length) {
@@ -58,27 +58,14 @@ module.exports = class FileManager {
     }
 
     static getFilePath(filename) {
-        let exists = false;
-        let filePath;
+        const filePath = Array.from(
+            new Set([
+                ...path.join(__dirname, '../').replace(/\\/g, '/').split('/'),
+                ...path.normalize(filename).replace(/\\/g, '/').split('/')
+            ])
+        ).join('/');
 
-        for (let i = 0; i < 3; i += 1) {
-            switch (i) {
-                case 0:
-                    filePath = path.resolve(filename);
-                    break;
-                case 1:
-                    filePath = path.resolve(`../${filename}`);
-                    break;
-                default:
-                    filePath = path.resolve(`./${filename}`);
-                    break;
-            }
-
-            exists = FileManager.fileExists(filePath);
-            if (exists) break;
-        }
-
-        return exists === true ? filePath.replace(/\\/g, '/') : false;
+        return FileManager.fileExists(filePath) === true ? filePath.replace(/\\/g, '/') : false;
     }
 
     static fileExists(filePath) {
