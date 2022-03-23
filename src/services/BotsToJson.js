@@ -10,6 +10,12 @@ module.exports = class BotsToJson {
 
     init(filename) {
         const filePath = FileManager.getFilePath(filename);
+
+        if (!filePath) {
+            console.error(`Arquivo não encontrado! | ${filename}`);
+            return;
+        }
+
         this.bots = SpreadsheetReader.readSpreadsheet(filePath, {
             pages: this.configs.pages,
             columns: this.configs.columns
@@ -30,7 +36,7 @@ module.exports = class BotsToJson {
     }
 
     setConfigs() {
-        this.configs = JSON.parse(FileManager.getFile('config.json'));
+        this.configs = JSON.parse(FileManager.getFile(FileManager.getFilePath('config.json')));
     }
 
     createBotsUnion() {
